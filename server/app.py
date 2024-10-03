@@ -20,19 +20,41 @@ def index():
 
 @app.route('/bakeries')
 def bakeries():
-    return ''
+    bakery_items = Bakery.query.all()
+    response = [item.to_dict() for item in bakery_items]
+
+    return make_response(jsonify(response), 200)
+    
+
 
 @app.route('/bakeries/<int:id>')
 def bakery_by_id(id):
-    return ''
+    bakery_item = Bakery.query.filter_by(id = id).first()
+    if bakery_item:
+        response = bakery_item.to_dict()
+        return make_response(jsonify(response), 200)
+    else:
+        return make_response(jsonify({"error": "Bakery not found"}))
+
 
 @app.route('/baked_goods/by_price')
 def baked_goods_by_price():
-    return ''
+    bakery_item = BakedGood.query.order_by(BakedGood.price.desc()).all()
+    if bakery_item:
+        response = [item.to_dict() for item in bakery_item]
+        return make_response(jsonify(response), 200)
+    else:
+        return make_response(jsonify({"error": "Price is not avaialble"}), 400)
+    
 
 @app.route('/baked_goods/most_expensive')
 def most_expensive_baked_good():
-    return ''
+    bakery_item = BakedGood.query.order_by(BakedGood.price.desc()).first()
+    if bakery_item:
+        response = bakery_item.to_dict()
+        return make_response(jsonify(response), 200)
+    else:
+        return make_response(jsonify({"error": "Price is not avaialble"}), 400)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
